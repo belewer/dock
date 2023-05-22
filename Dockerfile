@@ -10,9 +10,11 @@ FROM openjdk:11-ea-17-jre-slim
 
 WORKDIR /app
 
-RUN adduser -D user
+RUN adduser jovi
 
-COPY --from=build --chown=user:user /app/build/libs/dock-0.0.1-SNAPSHOT.jar ./
+USER jovi
+
+COPY --from=build --chown=jovi:jovi /app/build/libs/dock-0.0.1-SNAPSHOT.jar ./
 
 EXPOSE 8080
 
