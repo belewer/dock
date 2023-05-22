@@ -15,6 +15,11 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: lint
+            image: nvuillam/npm-groovy-lint
+            command:
+            - cat
+            tty: true            
           - name: node
             image: node:16-alpine
             command:
@@ -66,7 +71,7 @@ pipeline {
       steps {
         container('node') {
           sh '''
-            npm install npm-groovy-lint
+            npm install -g npm-groovy-lint
             npm-groovy-lint src
           '''
         }
