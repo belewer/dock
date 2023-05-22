@@ -34,6 +34,15 @@ pipeline {
   }
 
   stages {
+
+    stage('Install') {
+      steps {
+        container('jdk') {
+          sh 'sh gradlew build'
+        }
+      }
+    }
+
     stage('Audit') {
       steps {
         container('jdk') {
