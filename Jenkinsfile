@@ -59,8 +59,8 @@ pipeline {
             steps {
                 container('lint') {
                     sh '''
-            npm-groovy-lint
-          '''
+                        npm-groovy-lint src
+                    '''
                 }
             }
         }
