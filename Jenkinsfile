@@ -4,10 +4,7 @@ pipeline {
       yaml '''
         apiVersion: v1
         kind: Pod
-        spec:
-          securityContext:
-            runAsUser: 0
-            privileged: true          
+        spec:  
           serviceAccount: jenkinsci
           containers:
           - name: jdk
@@ -19,15 +16,7 @@ pipeline {
             image: nvuillam/npm-groovy-lint
             command:
             - cat
-            tty: true            
-          - name: node
-            image: node:16-alpine
-            command:
-            - cat
-            tty: true    
-            securityContext:
-              runAsUser: 0
-              privileged: true                
+            tty: true                        
           - name: helm
             image: alpine/helm
             command:
@@ -71,7 +60,7 @@ pipeline {
       steps {
         container('lint') {
           sh '''
-            npm-groovy-lint src
+            npm-groovy-lint
           '''
         }
       }
@@ -80,7 +69,7 @@ pipeline {
     stage('Test') {
       steps {
         container('jdk') {
-          sh 'sh gradle test'
+          sh 'sh gradlew test'
         }
       }
     }
@@ -89,7 +78,7 @@ pipeline {
       steps {
         container('docker') {
             script {
-                env.VERSION = sh(returnStdout: true, script: "gradle properties | grep version | sed -e 's/version: //'")
+                env.VERSION = sh(returnStdout: true, script: "sh gradlew properties | grep version | sed -e 's/version: //'")
                 sh 'docker build -t dock:\$VERSION .'
             }
         }
