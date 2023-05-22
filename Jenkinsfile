@@ -77,7 +77,7 @@ pipeline {
             steps {
                 container('docker') {
                     script {
-                        env.VERSION = sh(returnStdout: true, script: "sh gradlew properties | grep version | sed -e 's/version: //'")
+                        env.VERSION = sh(returnStdout: true, script: "cat build.gradle | grep 'version =' | sed -e 's/version = //' | sed -e s\"/'//\"g")
                         sh 'docker build -t dock:\$VERSION .'
                     }
                 }
