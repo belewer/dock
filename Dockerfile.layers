@@ -10,10 +10,10 @@ FROM openjdk:11-ea-17-jre-slim
 
 WORKDIR /app
 
-# RUN adduser -D user
+RUN adduser -D user
 
-# COPY --from=build --chown=user:user /app/build/libs/dock-0.0.1-SNAPSHOT.jar ./
+COPY --from=build --chown=user:user /app/build/libs/dock-0.0.1-SNAPSHOT.jar ./
 
-# EXPOSE 8080
+EXPOSE 8080
 
-# ENTRYPOINT ["java", "-jar", "/app/dock-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/dock-0.0.1-SNAPSHOT.jar"]
