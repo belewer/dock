@@ -16,7 +16,10 @@ pipeline {
             image: node:16-alpine
             command:
             - cat
-            tty: true            
+            tty: true    
+            securityContext:
+              runAsUser: 0
+              privileged: true                
           - name: helm
             image: alpine/helm
             command:
