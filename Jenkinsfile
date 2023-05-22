@@ -69,9 +69,8 @@ pipeline {
 
     stage('Lint') {
       steps {
-        container('node') {
+        container('lint') {
           sh '''
-            npm install -g npm-groovy-lint
             npm-groovy-lint src
           '''
         }
