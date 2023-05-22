@@ -56,8 +56,9 @@ pipeline {
         container('jdk') {
           sh '''
             apk add npm
-            npm install npm-groovy-lint
-            npx npm-groovy-lint src
+            adduser -D jdk
+            sudo -u jdk npm install npm-groovy-lint
+            sudo -u jdk npx npm-groovy-lint src
           '''
         }
       }
