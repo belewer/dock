@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app/
 
-RUN ./gradlew build
+RUN gradlew build
 
 FROM openjdk:11-ea-17-jre-slim
 
