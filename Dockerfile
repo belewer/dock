@@ -1,8 +1,12 @@
 FROM openjdk:17-jdk-alpine3.14 as build
 
+RUN adduser jovi
+
+USER jovi
+
 WORKDIR /app
 
-COPY . /app/
+COPY --chown=jovi:jovi . /app/
 
 RUN gradlew build
 
