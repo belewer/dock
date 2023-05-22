@@ -60,7 +60,7 @@ pipeline {
       steps {
         container('node') {
           sh '''
-            npm install npm-groovy-lint
+            npm install -g --unsafe-perm=true --allow-root npm-groovy-lint
             npx npm-groovy-lint src
           '''
         }
