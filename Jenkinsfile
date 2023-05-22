@@ -5,6 +5,9 @@ pipeline {
         apiVersion: v1
         kind: Pod
         spec:
+          securityContext:
+            runAsUser: 0
+            privileged: true          
           serviceAccount: jenkinsci
           containers:
           - name: jdk
@@ -63,8 +66,8 @@ pipeline {
       steps {
         container('node') {
           sh '''
-            npm install -g --unsafe-perm=true --allow-root npm-groovy-lint
-            npx npm-groovy-lint src
+            npm install npm-groovy-lint
+            npm-groovy-lint src
           '''
         }
       }
