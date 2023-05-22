@@ -12,6 +12,11 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: node
+            image: node:16-alpine
+            command:
+            - cat
+            tty: true            
           - name: helm
             image: alpine/helm
             command:
@@ -35,13 +40,13 @@ pipeline {
 
   stages {
 
-    stage('Install') {
-      steps {
-        container('jdk') {
-          sh 'sh gradlew build'
-        }
-      }
-    }
+    // stage('Install') {
+    //   steps {
+    //     container('jdk') {
+    //       sh 'sh gradlew build'
+    //     }
+    //   }
+    // }
 
     stage('Audit') {
       steps {
@@ -53,12 +58,10 @@ pipeline {
 
     stage('Lint') {
       steps {
-        container('jdk') {
+        container('node') {
           sh '''
-            apk add npm
-            adduser -D jdk
-            sudo -u jdk npm install npm-groovy-lint
-            sudo -u jdk npx npm-groovy-lint src
+            npm install npm-groovy-lint
+            npx npm-groovy-lint src
           '''
         }
       }
