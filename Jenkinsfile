@@ -37,7 +37,7 @@ pipeline {
     stage('Audit') {
       steps {
         container('jdk') {
-          sh './gradlew audit'
+          sh 'sh gradlew audit'
         }
       }
     }
@@ -57,7 +57,7 @@ pipeline {
     stage('Test') {
       steps {
         container('jdk') {
-          sh 'npm run test'
+          sh 'sh gradle test'
         }
       }
     }
