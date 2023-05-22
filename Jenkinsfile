@@ -1,10 +1,10 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml '''
+    agent {
+        kubernetes {
+            yaml '''
         apiVersion: v1
         kind: Pod
-        spec:  
+        spec:
           serviceAccount: jenkinsci
           containers:
           - name: jdk
@@ -16,12 +16,12 @@ pipeline {
             image: nvuillam/npm-groovy-lint
             command:
             - cat
-            tty: true                        
+            tty: true
           - name: helm
             image: alpine/helm
             command:
             - cat
-            tty: true            
+            tty: true
           - name: docker
             image: docker:latest
             command:
@@ -33,13 +33,12 @@ pipeline {
           volumes:
           - name: docker-sock
             hostPath:
-              path: /var/run/docker.sock    
+              path: /var/run/docker.sock
         '''
+        }
     }
-  }
 
-  stages {
-
+    stages {
     // stage('Install') {
     //   steps {
     //     container('jdk') {
@@ -48,56 +47,56 @@ pipeline {
     //   }
     // }
 
-    stage('Audit') {
-      steps {
-        container('jdk') {
-          sh 'sh gradlew check'
-        }
-      }
-    }
-
-    stage('Lint') {
-      steps {
-        container('lint') {
-          sh '''
-            npm-groovy-lint
-          '''
-        }
-      }
-    }
-
-    stage('Test') {
-      steps {
-        container('jdk') {
-          sh 'sh gradlew test'
-        }
-      }
-    }
-
-    stage('Build') {
-      steps {
-        container('docker') {
-            script {
-                env.VERSION = sh(returnStdout: true, script: "sh gradlew properties | grep version | sed -e 's/version: //'")
-                sh 'docker build -t dock:\$VERSION .'
+        stage('Audit') {
+            steps {
+                container('jdk') {
+                    sh 'sh gradlew check'
+                }
             }
         }
-      }
-    }
 
-    stage('Publish') {
-        steps {
-        container('docker') {
-            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                sh '''
+        stage('Lint') {
+            steps {
+                container('lint') {
+                    sh '''
+            npm-groovy-lint
+          '''
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                container('jdk') {
+                    sh 'sh gradlew test'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                container('docker') {
+                    script {
+                        env.VERSION = sh(returnStdout: true, script: "sh gradlew properties | grep version | sed -e 's/version: //'")
+                        sh 'docker build -t dock:\$VERSION .'
+                    }
+                }
+            }
+        }
+
+        stage('Publish') {
+            steps {
+                container('docker') {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh '''
                     docker login -u $USER -p $PASS
                     docker tag dock:\$VERSION jovilon/dock:\$VERSION
                     docker push jovilon/dock:\$VERSION
                 '''
-            }            
+                    }
+                }
+            }
         }
-      }
-    }
 
     // stage('Deploy') {
     //   steps {
@@ -105,12 +104,11 @@ pipeline {
     //       sh '''
     //         helm repo add postgresql https://charts.bitnami.com/bitnami
     //         helm repo update
-    //         helm dependency build charts/pepe-project/ 
+    //         helm dependency build charts/pepe-project/
     //         helm upgrade --install pepe-project charts/pepe-project/ -f charts/pepe-project/values.yaml -n apps
     //       '''
     //     }
     //   }
     // }
-
-  }
+    }
 }
