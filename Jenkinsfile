@@ -23,7 +23,7 @@ pipeline {
             - cat
             tty: true
           - name: docker
-            image: docker:latest
+            image: docker:20.10.24-alpine3.18
             command:
             - cat
             tty: true
